@@ -1,6 +1,6 @@
 const { verifyJWT } = require('../infra/securityExtension');
-const dependencies = require('../infra/dependencyInjection.js').LoadDependencies;
 const { responseHandle } = require('../infra/createResponse.js');
+const CardapioBusiness = require('../business/cardapioBusiness.js').CardapioBusiness;
 
 
 var CardapioRoutes = class CardapioRoutes {
@@ -9,12 +9,16 @@ var CardapioRoutes = class CardapioRoutes {
     }
 
     registrarRotas() {
-        this._application.post('/cardapio/', verifyJWT, dependencies(this), (req, resp) => {
-            responseHandle(resp, this._business.cadastrar(req.body));
+        this._application.post('/cardapio/', verifyJWT, (req, resp) => {
+            this._business = new CardapioBusiness(req.container.cradle);
+            var promise = this._business.cadastrar(req.body);
+            responseHandle(resp, promise);
         });
 
-        this._application.post('/cardapios/', verifyJWT, dependencies(this), (req, resp) => {
-            responseHandle(resp, this._business.filtrar(req.body));
+        this._application.post('/cardapios/', verifyJWT, (req, resp) => {
+            this._business = new CardapioBusiness(req.container.cradle);
+            var promise = this._business.filtrar(req.body);
+            responseHandle(resp, promise);
         });
     }
 }

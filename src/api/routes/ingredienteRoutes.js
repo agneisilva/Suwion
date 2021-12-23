@@ -1,6 +1,6 @@
 const { verifyJWT } = require('../infra/securityExtension');
 const Ingrediente = require('../models/ingrediente').Ingrediente;
-const dependencies = require('../infra/dependencyInjection.js').LoadDependencies;
+const IngredienteBusiness = require('../business/ingredienteBusiness.js').IngredienteBusiness;
 const { responseHandle } = require('../infra/createResponse.js');
 const {
     criarIngredienteRules,
@@ -15,32 +15,46 @@ var IngredienteRoutes = class IngredienteRoutes {
     }
 
     registrarRotas() {
-        this._application.get('/ingrediente/:id', verifyJWT, dependencies(this), (req, resp) => {
-            responseHandle(resp, this._ingredienteBusiness.buscarPorId(req.params.id));
+        this._application.get('/ingrediente/:id', verifyJWT, (req, resp) => {
+            this._business = new IngredienteBusiness(req.container.cradle);
+            var promise = this._business.buscarPorId(req.params.id)
+            responseHandle(resp, promise);
         })
 
-        this._application.get('/ingredientes/:descricao', verifyJWT, dependencies(this), (req, resp) => {
-            responseHandle(resp, this._ingredienteBusiness.buscar(req.params.descricao));
+        this._application.get('/ingredientes/:descricao', verifyJWT, (req, resp) => {
+            this._business = new IngredienteBusiness(req.container.cradle);
+            var promise = this._business.buscar(req.params.descricao)
+            responseHandle(resp, promise);
         })
 
-        this._application.post('/ingredientes', verifyJWT, dependencies(this), (req, resp) => {
-            responseHandle(resp, this._ingredienteBusiness.listar(req.body));
+        this._application.post('/ingredientes', verifyJWT, (req, resp) => {
+            this._business = new IngredienteBusiness(req.container.cradle);
+            var promise = this._business.listar(req.body)
+            responseHandle(resp, promise);
         })
 
-        this._application.post('/ingrediente', criarIngredienteRules(), validate, verifyJWT, dependencies(this), (req, resp) => {
-            responseHandle(resp, this._ingredienteBusiness.cadastrar(new Ingrediente(req.body)));
+        this._application.post('/ingrediente', criarIngredienteRules(), validate, verifyJWT, (req, resp) => {
+            this._business = new IngredienteBusiness(req.container.cradle);
+            var promise = this._business.cadastrar(new Ingrediente(req.body))
+            responseHandle(resp, promise);
         })
 
-        this._application.post('/ingredientes/autocomplete', dependencies(this), (req, resp)=>{
-            responseHandle(resp, this._ingredienteBusiness.buscarAutoComplete(req.body.descricao));
+        this._application.post('/ingredientes/autocomplete', (req, resp)=>{
+            this._business = new IngredienteBusiness(req.container.cradle);
+            var promise = this._business.buscarAutoComplete(req.body.descricao)
+            responseHandle(resp, promise);
         })
 
-        this._application.put('/ingrediente', alterarIngredienteRules(), validate, verifyJWT, dependencies(this), (req, resp) => {
-            responseHandle(resp, this._ingredienteBusiness.alterar(new Ingrediente(req.body)));
+        this._application.put('/ingrediente', alterarIngredienteRules(), validate, verifyJWT, (req, resp) => {
+            this._business = new IngredienteBusiness(req.container.cradle);
+            var promise = this._business.alterar(new Ingrediente(req.body));
+            responseHandle(resp, promise);
         })
 
-        this._application.delete('/ingrediente', deletarIngredienteRules(), validate, verifyJWT, dependencies(this), (req, resp) => {
-            responseHandle(resp, this._ingredienteBusiness.deletar(req.body.ingredienteId));
+        this._application.delete('/ingrediente', deletarIngredienteRules(), validate, verifyJWT, (req, resp) => {
+            this._business = new IngredienteBusiness(req.container.cradle);
+            var promise = this._business.deletar(req.body.ingredienteId);
+            responseHandle(resp, promise);
         })
     }
 }

@@ -1,6 +1,6 @@
 const { logarUsuarioRules, validate } = require('../business/validacoes/usuarioValidacao');
-const dependencies = require('../infra/dependencyInjection.js').LoadDependencies;
 const { responseHandle } = require('../infra/createResponse.js');
+const UsuarioBusiness = require('../business/usuarioBusiness.js').UsuarioBusiness;
 
 var AutenticacaoRoutes = class AutenticacaoRoutes {
     constructor(application) {
@@ -9,8 +9,10 @@ var AutenticacaoRoutes = class AutenticacaoRoutes {
 
     registrarRotas() {
 
-        this._application.post('/login', logarUsuarioRules(), validate, dependencies(this), (req, resp) => {
-            responseHandle(resp, this._userBusiness.autenticar(req.body));
+        this._application.post('/login', logarUsuarioRules(), validate, (req, resp) => {
+            this._userBusiness = new UsuarioBusiness(req.container.cradle);
+            var promise = this._userBusiness.autenticar(req.body);
+            responseHandle(resp, promise);
         });
     }
 }

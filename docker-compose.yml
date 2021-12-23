@@ -2,58 +2,58 @@ version: '3.4'
 
 services:
 
-    proxy:
-        image: ${DOCKER_REGISTRY:-agneisilva}/suwion.reverseproxy:${PLATFORM:-linux}-${TAG:-latest}
-        container_name: suwion.reverseproxy
-        build: 
-            context: ./src/reverseproxy
-            dockerfile: Dockerfile
-        environment: 
-            HOST_SUWION_API: local.api.suwion.com.br
-            HOST_SUWION_PORTAL: local.suwion.com.br
-        networks:
-            - bridge-network
-        depends_on:
-            - portal
-            - webapi
-        ports:
-            - 80:80
-            - 443:443
+    # proxy:
+    #     image: ${DOCKER_REGISTRY:-agneisilva}/suwion.reverseproxy:${PLATFORM:-linux}-${TAG:-latest}
+    #     container_name: suwion.reverseproxy
+    #     build: 
+    #         context: ./src/reverseproxy
+    #         dockerfile: Dockerfile
+    #     environment: 
+    #         HOST_SUWION_API: local.api.suwion.com.br
+    #         HOST_SUWION_PORTAL: local.suwion.com.br
+    #     networks:
+    #         - bridge-network
+    #     depends_on:
+    #         - portal
+    #         - webapi
+    #     ports:
+    #         - 80:80
+    #         - 443:443
 
-    portal:
-        image: ${DOCKER_REGISTRY:-agneisilva}/suwion.portal:${PLATFORM:-linux}-${TAG:-latest}
-        container_name: suwion.portal
-        restart: always
-        build:
-          context: ./src/portal/
-          dockerfile: Dockerfile
-        networks:
-         - bridge-network
-        ports:
-            - 3001:3000
+    # portal:
+    #     image: ${DOCKER_REGISTRY:-agneisilva}/suwion.portal:${PLATFORM:-linux}-${TAG:-latest}
+    #     container_name: suwion.portal
+    #     restart: always
+    #     build:
+    #       context: ./src/portal/
+    #       dockerfile: Dockerfile
+    #     networks:
+    #      - bridge-network
+    #     ports:
+    #         - 3001:3000
 
-    webapi:
-        image: ${DOCKER_REGISTRY:-agneisilva}/suwion.webapi:${PLATFORM:-linux}-${TAG:-latest}
-        container_name: suwion.webapi
-        restart: always
-        build:
-          context: ./src/api/
-          dockerfile: Dockerfile
-        environment:
-            SUWION_MONGO_CONN_STR: mongodb://root:Mongo123!@mongo:27017/?authSource=admin
-        depends_on:
-         - mongo
-        networks:
-         - bridge-network
-        ports:
-            - 3000:3000
+    # webapi:
+    #     image: ${DOCKER_REGISTRY:-agneisilva}/suwion.webapi:${PLATFORM:-linux}-${TAG:-latest}
+    #     container_name: suwion.webapi
+    #     restart: always
+    #     build:
+    #       context: ./src/api/
+    #       dockerfile: Dockerfile
+    #     environment:
+    #         SUWION_MONGO_CONN_STR: mongodb://suwion:Mongo123!@mongo:27017/?authSource=admin
+    #     depends_on:
+    #      - mongo
+    #     networks:
+    #      - bridge-network
+    #     ports:
+    #         - 3000:3000
 
     mongo:
         image: mongo
         restart: unless-stopped
         container_name: mongo
         environment:
-            MONGO_INITDB_ROOT_USERNAME: root  
+            MONGO_INITDB_ROOT_USERNAME: suwion  
             MONGO_INITDB_ROOT_PASSWORD: Mongo123!
         networks:
             - bridge-network
@@ -63,47 +63,47 @@ services:
         ports:
             - "27017:27017"
             
-            
     mongo-express:
         image: mongo-express
         container_name: mongo-express
         ports:
             - 8081:8081
         environment:
-            ME_CONFIG_BASICAUTH_USERNAME: coronavirus
+            ME_CONFIG_BASICAUTH_USERNAME: suwion
             ME_CONFIG_BASICAUTH_PASSWORD: MongoExpress123!
             ME_CONFIG_MONGODB_PORT: 27017
-            ME_CONFIG_MONGODB_ADMINUSERNAME: root
+            ME_CONFIG_MONGODB_ADMINUSERNAME: suwion
             ME_CONFIG_MONGODB_ADMINPASSWORD: Mongo123!
         links:
             - mongo
         networks:
             - bridge-network
 
-    portainer:
-        image: portainer/portainer
-        container_name: portainer
-        command: -H unix:///var/run/docker.sock
-        restart: always
-        volumes:
-            - /var/run/docker.sock:/var/run/docker.sock
-            - portainer_data:/data
-        ports:
-            - 9000:9000
 
-    statping:
-        container_name: statping
-        image: statping/statping
-        restart: always
-        ports:
-            - 8080:8080
-        volumes:
-            - ./statping:/app
-        environment:
-            DB_CONN: sqlite
-            ADMIN_USER: suwionadmin
-            ADMIN_PASSWORD: Suwion@123
-            REMOVE_AFTER: 168h #Automatically delete records after time
+    # portainer:
+    #     image: portainer/portainer
+    #     container_name: portainer
+    #     command: -H unix:///var/run/docker.sock
+    #     restart: always
+    #     volumes:
+    #         - /var/run/docker.sock:/var/run/docker.sock
+    #         - portainer_data:/data
+    #     ports:
+    #         - 9000:9000
+
+    # statping:
+    #     container_name: statping
+    #     image: statping/statping
+    #     restart: always
+    #     ports:
+    #         - 8080:8080
+    #     volumes:
+    #         - ./statping:/app
+    #     environment:
+    #         DB_CONN: sqlite
+    #         ADMIN_USER: suwionadmin
+    #         ADMIN_PASSWORD: Suwion@123
+    #         REMOVE_AFTER: 168h #Automatically delete records after time
 
 volumes:
   mongodb:

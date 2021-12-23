@@ -2,9 +2,9 @@ const express = require("express");
 const load = require("consign");
 const cors = require("cors");
 const bodyParser = require("body-parser"); 
-const mongoMiddleware = require("../middleware/mongoMiddleware.js");
-const LoadMaps = require('../infra/dependencyInjection').LoadMaps;
-const allDependenciesMaps = require('./dependenciesMap/dependenciesMap.js');
+const mongoMiddleware = require("../infra/mongoDB.js");
+const container = require('./dependenciesMap.js');
+
 
 module.exports = function () {
     var application = express();
@@ -14,7 +14,7 @@ module.exports = function () {
     
     application.use(cors());
     application.use(mongoMiddleware());
-    application.use(LoadMaps(allDependenciesMaps(application)));
+    application.use(container());
 
     load()
         .include("business")

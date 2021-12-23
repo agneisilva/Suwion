@@ -2,9 +2,9 @@ const Receita = require('../models/receita').Receita;
 const Ingrediente = require('../models/ingrediente').Ingrediente;
 
 var ReceitaBusiness = class ReceitaBusiness {
-    constructor({ receitaDao, _ingredienteBusiness }) {
+    constructor({ receitaDao, ingredienteBusiness }) {
         this._dao = receitaDao;
-        this._ingrediente = _ingredienteBusiness;
+        this._ingrediente = ingredienteBusiness;
     }
 
     buscarPorId(id) {

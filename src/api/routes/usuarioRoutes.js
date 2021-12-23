@@ -1,6 +1,6 @@
 const { verifyJWT } = require('../infra/securityExtension');
 const Usuario = require('../models/usuario').Usuario;
-const dependencies = require('../infra/dependencyInjection.js').LoadDependencies;
+const UsuarioBusiness = require('../business/usuarioBusiness.js').UsuarioBusiness;
 const { responseHandle } = require('../infra/createResponse.js');
 const {
     criarUsuarioRules,
@@ -15,32 +15,46 @@ var UsuarioRoutes = class UsuarioRoutes {
     }
 
     registrarRotas() {
-        this._application.get('/usuario/:id', verifyJWT, dependencies(this), (req, resp) => {
-            responseHandle(resp, this._userBusiness.buscarPorId(req.params.id));
+        this._application.get('/usuario/:id', verifyJWT, (req, resp) => {
+            this._userBusiness = new UsuarioBusiness(req.container.cradle);
+            var promise = this._userBusiness.buscarPorId(req.params.id);
+            responseHandle(resp, promise);
         })
 
-        this._application.get('/usuario/email/:email', verifyJWT, dependencies(this), (req, resp) => {
-            responseHandle(resp, this._userBusiness.buscarPorEmail(req.params.email));
+        this._application.get('/usuario/email/:email', verifyJWT, (req, resp) => {
+            this._userBusiness = new UsuarioBusiness(req.container.cradle);
+            var promise = this._userBusiness.buscarPorEmail(req.params.email);
+            responseHandle(resp, promise);
         })
 
-        this._application.get('/usuario/nickname/:nickname', verifyJWT, dependencies(this), (req, resp) => {
-            responseHandle(resp, this._userBusiness.buscarPorNickName(req.params.nickname));
+        this._application.get('/usuario/nickname/:nickname', verifyJWT, (req, resp) => {
+            this._userBusiness = new UsuarioBusiness(req.container.cradle);
+            var promise = this._userBusiness.buscarPorNickName(req.params.nickname);
+            responseHandle(resp, promise);
         })
 
-        this._application.get('/usuarios/nickname/:nickname', verifyJWT, dependencies(this), (req, resp) => {
-            responseHandle(resp, this._userBusiness.listarPorNickName(req.params.nickname));
+        this._application.get('/usuarios/nickname/:nickname', verifyJWT, (req, resp) => {
+            this._userBusiness = new UsuarioBusiness(req.container.cradle);
+            var promise = this._userBusiness.listarPorNickName(req.params.nickname);
+            responseHandle(resp, promise);
         })
 
-        this._application.post('/usuario/', criarUsuarioRules(), validate, dependencies(this),  (req, resp) => {
-            responseHandle(resp, this._userBusiness.cadastrar(new Usuario(req.body)));
+        this._application.post('/usuario/', criarUsuarioRules(), validate, (req, resp) => {
+            this._userBusiness = new UsuarioBusiness(req.container.cradle);
+            var promise = this._userBusiness.cadastrar(new Usuario(req.body));
+            responseHandle(resp, promise);
         })
 
-        this._application.put('/usuario/', alterarUsuarioRules(), validate, verifyJWT, dependencies(this), (req, resp) => {
-            responseHandle(resp, this._userBusiness.alterar(new Usuario(req.body)));
+        this._application.put('/usuario/', alterarUsuarioRules(), validate, verifyJWT, (req, resp) => {
+            this._userBusiness = new UsuarioBusiness(req.container.cradle);
+            var promise = this._userBusiness.alterar(new Usuario(req.body));
+            responseHandle(resp, promise);
         })
 
-        this._application.delete('/usuario', verifyJWT, dependencies(this), (req, resp) => {
-            responseHandle(resp, this._userBusiness.deletar(req.usuarioId));
+        this._application.delete('/usuario', deletarUsuarioRules(), validate, verifyJWT, (req, resp) => {
+            this._userBusiness = new UsuarioBusiness(req.container.cradle);
+            var promise = this._userBusiness.deletar(req.usuarioId);
+            responseHandle(resp, promise);
         });
     }
 }

@@ -2,7 +2,7 @@ const { genRandomString, sha512 } = require('../infra/securityExtension');
 const jwt = require('jsonwebtoken');
 const {Error, ErrorTipo} = require('../infra/error.js');
 
-var UsuarioBusiness = class UsuarioBusiness {
+exports.UsuarioBusiness = class UsuarioBusiness {
     constructor({ userDao }) {
         this._userDao = userDao;
     }
@@ -169,4 +169,4 @@ var UsuarioBusiness = class UsuarioBusiness {
     }
 }
 
-exports.UsuarioBusiness = UsuarioBusiness;
+// exports.UsuarioBusiness = UsuarioBusiness

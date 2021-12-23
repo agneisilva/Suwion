@@ -1,8 +1,8 @@
 const MongoClient = require('mongodb').MongoClient;
-const uri = process.env.SUWION_MONGO_CONN_STR || "mongodb://suwiondb:xshvT75Y4cMf2RfOiu6bJ36R2VEZAim3K0qplrv0rxlZL8GrR8K9aU2uvB6xbR7VLK6o2BN68AFWskfqQRpV5g==@suwiondb.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&maxIdleTimeMS=120000&appName=@suwiondb@";
+// const uri = process.env.SUWION_MONGO_CONN_STR || "mongodb://suwiondb:xshvT75Y4cMf2RfOiu6bJ36R2VEZAim3K0qplrv0rxlZL8GrR8K9aU2uvB6xbR7VLK6o2BN68AFWskfqQRpV5g==@suwiondb.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&maxIdleTimeMS=120000&appName=@suwiondb@";
+const uri = "mongodb://suwion:Mongo123!@localhost:27017/?authSource=admin";
 
-
-module.exports = () => {
+var mongodb = () => {
     var connection;
     const property = "db";
 
@@ -23,3 +23,5 @@ module.exports = () => {
             });
     }
 };
+
+module.exports = mongodb;

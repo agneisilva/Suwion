@@ -1,14 +1,13 @@
-class AutenticacaoService
-{
-    logar(token){
+class AutenticacaoService {
+    logar(token) {
         localStorage.setItem("token", token);
     }
 
-    deslogar(){
+    deslogar() {
         localStorage.removeItem("token");
     }
-    
-    autenticado(){ localStorage.getItem("token"); }
+
+    autenticado() { localStorage.getItem("token"); }
 }
 
-export {AutenticacaoService};
+export { AutenticacaoService };
